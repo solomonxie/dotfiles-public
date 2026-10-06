@@ -1,0 +1,6 @@
+neovim
+vim-language-server
+typescript typescript-language-server
+bash-language-server
+diagnostic-languageserver
+install pyright

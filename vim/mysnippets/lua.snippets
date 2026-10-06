@@ -1,0 +1,84 @@
+snippet dbg
+require('debugger')()
+endsnippet
+
+snippet inspect
+require('inspect')(${1:tb})
+endsnippet
+
+
+snippet enumerate
+function enumerate (tb)
+    local i = 0
+    return function ()
+        i = i + 1
+        if i <= #tb then return i, tb[i] end
+    end
+end
+endsnippet
+
+snippet enumerate_line
+function enumerate_line(content)
+    local i = 0
+    return function ()
+        i = i + 1
+        local pos = string.find(content, '\n')
+        if not pos then pos = 1 end
+        local line = string.sub(content, 1, pos - 1)
+        line = string.gsub(string.gsub(line, '^%s+', ''), '%s+$', '')
+        if string.len(line) > 0 and pos <= #content then
+            content = string.sub(content, pos + 1)
+            return i, line
+        end
+    end
+end
+endsnippet
+
+snippet if1
+if not ${1:variable} then ${2:expression} end
+endsnippet
+
+snippet trim
+${1:mystr} = string.gsub(string.gsub(${1}, '^%s+', ''), '%s+$', '')
+endsnippet
+
+
+snippet read_file
+f = io.open(${1:path}, 'r')
+rows = {}
+while true do
+	local v = f:read()
+	if not v then
+		f:close()
+		break
+	end
+	print(v)
+	table.insert(rows, v)
+end
+endsnippet
+
+
+snippet write_file
+f = io.open(${1:path}, '${2:a}')
+f:write('1hihi', '\n')
+f:write('2hello', '\n')
+f:close()
+endsnippet
+
+
+snippet read_file_by_line
+function read_file_by_line(path)
+    print('LODING CONTENT...')
+    local i = 0
+    local iter = io.lines(path)
+    return function ()
+        i = i + 1
+        local line = iter()
+        if line then
+			return i, line
+        else
+            print('DONE: LOADED CSV CONTENT...')
+        end
+    end
+end
+endsnippet

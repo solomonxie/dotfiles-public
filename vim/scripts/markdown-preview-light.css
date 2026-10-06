@@ -1,0 +1,12 @@
+/* Overrides markdown-preview-dark.css's colors when <body> has .theme-light
+   (toggled by the button in markdown-preview-theme-toggle.html). Layout
+   properties (width/margin/padding/font/line-height) are theme-agnostic and
+   stay in the dark stylesheet's unscoped `body` rule. */
+body.theme-light { background: #ffffff; color: #24292f; }
+body.theme-light h1, body.theme-light h2, body.theme-light h3,
+body.theme-light h4, body.theme-light h5, body.theme-light h6 { color: #0969da; }
+body.theme-light a { color: #0969da; }
+body.theme-light code, body.theme-light pre { background: #f6f8fa; color: #cf222e; }
+body.theme-light blockquote { border-left-color: #d0d7de; color: #57606a; }
+body.theme-light hr { border-top-color: #d0d7de; }
+body.theme-light th, body.theme-light td { border-color: #d0d7de; }

@@ -1,0 +1,5 @@
+<button id="theme-toggle" onclick="
+document.body.classList.toggle('theme-light');
+this.textContent = document.body.classList.contains('theme-light') ? '🌙' : '☀️';
+if (window.renderMermaid) window.renderMermaid();
+" style="position:fixed;top:1rem;right:1rem;font-size:1.2rem;background:none;border:none;cursor:pointer;">☀️</button>
