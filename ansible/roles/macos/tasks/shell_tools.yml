@@ -37,12 +37,6 @@
     - { src: '.dotfiles/etc/tigrc', dest: '.tigrc' }
     - { src: '.dotfiles/etc/fd', dest: '.config/fd' }
 
-- name: Install tmux server LaunchAgent (not loaded here, see tmux/README.md)
-  ansible.builtin.copy:
-    src: "{{ ansible_facts.env.HOME }}/.dotfiles/tmux/com.local.tmux.plist"
-    dest: "{{ ansible_facts.env.HOME }}/Library/LaunchAgents/com.local.tmux.plist"
-    remote_src: true
-    mode: '0644'
 
 
 
