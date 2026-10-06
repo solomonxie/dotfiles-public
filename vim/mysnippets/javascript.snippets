@@ -1,0 +1,126 @@
+
+snippet	func
+function func(a, b) {
+	// do something
+}
+endsnippet
+
+snippet	func_arrow
+func(obj, (a, b) => {
+	// do something
+});
+endsnippet
+
+snippet log
+console.log(${1:${VISUAL:something}});
+endsnippet
+
+snippet info
+console.info(${1:${VISUAL:something}});
+endsnippet
+
+snippet error
+console.error(${1:${VISUAL:something}});
+endsnippet
+
+snippet warn
+console.warn(${1:${VISUAL:something}});
+endsnippet
+
+snippet fs
+const fs = require('fs');
+endsnippet
+
+snippet readJson
+const fs = require('fs');
+const content = fs.readFileSync('${1:${VISUAL:path_to_file}}', 'utf-8');
+console.log(content);
+endsnippet
+
+snippet writeJson
+const fs = require('fs');
+fs.writeFileSync('${1:${VISUAL:path_to_file}}', JSON.stringfy(obj), {flag: 'w'});
+endsnippet
+
+snippet deb "debugger;"
+debugger;
+endsnippet
+
+snippet	puppeteer_hello_word
+const puppeteer = require('puppeteer');
+
+(async () => {
+    debugger;
+    const browser = await puppeteer.launch({headless: false});
+    const page = await browser.newPage();
+    await page.goto('https://www.baidu.com');
+    let res, inputBox, btnSubmit;
+    res = await page.$x("//input[@id='kw']");
+    if (res.length > 0) inputBox = res[0];
+    res = await page.$x("//input[@id='su']");
+    if (res.length > 0) btnSubmit = res[0];
+    await inputBox.click();
+    await page.keyboard.type('hello', {delay: 2000});
+    await btnSubmit.click();
+    await browser.close();
+    debugger;
+})();
+endsnippet
+
+snippet ifmain
+(async () => {
+	// MY CODE...
+})();
+endsnippet
+
+
+snippet af "Async Function As Function"
+async function ${1:${VISUAL:myfunc}}() {
+}
+endsnippet
+
+snippet afa "Anonymous Async Code Block"
+(async () => {
+	// MY CODE...
+})();
+endsnippet
+
+snippet afc "Async Function As Constant"
+const ${1:${VISUAL:myfunc}} = async () => {
+};
+endsnippet
+
+
+snippet exports "Export Module"
+module.exports = {
+	${1:${VISUAL:myfunc}}: ${2:${VISUAL:myfunc}},
+};
+endsnippet
+
+snippet export
+module.exports.${1:${VISUAL:myfunc}} = async function $1(${2:${VISUAL:arg1}}) {
+	console.log($2)
+};
+endsnippet
+
+snippet sleep
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+await sleep(2000);
+endsnippet
+
+
+snippet try
+try {
+} catch (e) {console.warn(e)}
+endsnippet
+
+snippet try1 "Try Catch Without Catch"
+try {
+} catch (e) {1 == 1}
+endsnippet
+
+snippet globals "Global Definitions For IDE Linters"
+/*IDE LINTER FRIENDLY*/
+/*global WORKSPACE_ROOT */
+/*eslint no-undef: "error"*/
+endsnippet

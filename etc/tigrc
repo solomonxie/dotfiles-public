@@ -1,0 +1,9 @@
+# REF: https://jonas.github.io/tig/doc/tigrc.5.html
+
+set show-changes = yes
+# bind generic j next
+# bind generic k prev
+
+bind generic P ?git push
+bind generic B +git status -sb
+bind generic @ ?git reset --hard

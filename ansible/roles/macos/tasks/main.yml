@@ -1,0 +1,49 @@
+# Tasks to install Homebrew dependencies, manage packages, and configure macOS system settings.
+---
+- name: Ensure Homebrew taps are present
+  community.general.homebrew_tap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ homebrew_taps }}"
+
+- name: Install Homebrew formulas
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ homebrew_packages }}"
+
+# - name: Set macOS system defaults (e.g., show hidden files in Finder)
+#   community.general.osx_defaults:
+#     domain: com.apple.finder
+#     key: AppleShowAllFiles
+#     type: bool
+#     value: true
+#     state: present
+
+# - name: Set Dock to autohide
+#   community.general.osx_defaults:
+#     domain: com.apple.dock
+#     key: autohide
+#     type: bool
+#     value: true
+#     state: present
+#   notify: Restart Dock
+
+# Modular includes
+- name: Apply macOS system defaults
+  ansible.builtin.include_tasks: system_defaults.yml
+
+- name: Run Programming Languages setup (Python, nodejs...)
+  ansible.builtin.include_tasks: languages.yml
+
+- name: Run Neovim release install
+  ansible.builtin.include_tasks: neovim.yml
+
+- name: Run Vim, Zsh, and Tmux setup
+  ansible.builtin.include_tasks: shell_tools.yml
+
+- name: Run iTerm2 profile setup
+  ansible.builtin.include_tasks: iterm2.yml
+
+- name: Pull default Ollama models
+  ansible.builtin.include_tasks: ollama.yml

@@ -1,0 +1,180 @@
+"REF: https://github.com/junegunn/fzf.vim
+"
+" let g:fzf_layout = { 'down': '~40%' }  " down | up | left | right
+" let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+
+let g:fzf_preview_window = ['right:40%', 'ctrl-/']  " up|down|left|right
+
+let $FZF_DEFAULT_OPTS='--layout=reverse --info=inline'
+" .git/ and venv/ stay excluded via ~/.config/fd/ignore (etc/fd/ignore), even with --hidden
+let $FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard || fd --type f --type l --hidden --follow"
+" command! -bang -nargs=? -complete=dir Files
+"         \ call fzf#vim#files(<q-args>, { 'options': "--prompt '>' $FZF_DEFAULT_OPTS"}, <bang>0)
+
+" let g:fzf_buffers_jump = 1  " [Buffers] Jump to the existing window if possible
+
+" [[B]Commits] Customize the options used by 'git log':
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+" [Tags] Command to generate tags file
+let g:fzf_tags_command = 'ctags -R'
+
+"let g:fzf_history_dir = '~/.vim/fzf-history'  "[History] -> will block Ctrl-n & Ctrl-p keys
+
+"- enew / -tabnew / 10split enew
+"let g:fzf_layout = { 'window': 'enew' }
+"let g:fzf_layout = { 'window': '-tabnew' }
+"let g:fzf_layout = { 'window': '10split enew' }
+
+function! FloatingFZF()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+  let height = float2nr(&lines * 0.7)
+  let width = float2nr(&columns * 0.85)
+  let horizontal = float2nr(&columns * 0.1)
+  let vertical = &lines * 0.15
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': vertical,
+        \ 'col': horizontal,
+        \ 'width': width,
+        \ 'height': height,
+        \ 'style': 'minimal'
+        \ }
+  call nvim_open_win(buf, v:true, opts)
+endfunction
+
+function! SpecifyFileFinderFolder(cmd)
+    let s:dir = expand("%:h")
+    let s:dir = input("", s:dir)
+    let s:dir = substitute(s:dir, '/$', '', 'g')
+    let s:full_dir = fnamemodify(s:dir, ':p')
+    " echo "\nSearch scoope: ". s:dir ."\n"
+    if a:cmd == 'Files'
+        execute "Files " . s:dir . "/"
+    elseif a:cmd == 'FZFRg'
+        " RigGrep special:
+        command! -bang -nargs=* FZFRg call fzf#vim#grep(
+            \ "rg --hidden --column --line-number --no-heading --color=always --smart-case ". shellescape(<q-args>) . " ". s:dir,
+            \ 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+        execute 'FZFRg'
+    endif
+endfunction
+
+command! -bang -nargs=* FzfQuickfix call s:FzfQuickfix(<q-args>)
+function! s:FzfQuickfix(query) abort
+    let command = 'rg --vimgrep --no-heading --smart-case ' . shellescape(a:query)
+    let result = system(command)
+    let lines = split(result, "\n")
+    call setqflist(map(lines, '{"filename": v:val, "lnum": str2nr(split(v:val, ":")[1]), "col": str2nr(split(v:val, ":")[2]), "text": join(split(v:val, ":")[3:], ":")}'))
+    copen
+endfunction
+
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+  copen
+endfunction
+
+"">> KEY MAPPINGS
+nnoremap fd :Files<CR>
+nnoremap fa :Ag<CR>
+nnoremap fb :Buffers<CR>
+" nnoremap fl :BLines<CR>
+" nnoremap ft :BTags<CR>
+" nnoremap fh :History:<CR>
+nnoremap fc :History:<CR>
+nnoremap fm :Marks<CR>
+" nnoremap tc :History:<CR>
+" nnoremap th :History<CR>
+" nnoremap tm :Marks<CR>
+" nnoremap ts :Snippets<CR>
+
+nnoremap FD :call SpecifyFileFinderFolder("Files")<CR>
+nnoremap FA :call SpecifyFileFinderFolder("FZFRg")<CR>
+" nnoremap FC :Commands<CR>
+" nnoremap gC :<C-f>
+
+" This is the default extra key bindings
+let g:fzf_action = {
+    \ 'ctrl-x': function('s:build_quickfix_list'),
+\}
+" let g:fzf_action = {
+"     \ 'ctrl-t': 'tab split',
+"     \ 'ctrl-x': 'split',
+"     \ 'ctrl-v': 'vsplit' ,
+"     \ 'ctrl-e': 'edit' ,
+" \}
+
+
+">> Alter options
+" let g:x_fzf_opts = {'options': [
+"     \      '--layout=reverse', '--info=inline',
+"     \      '--preview', '~/vim_plugged/fzf.vim/bin/preview.sh {}'
+"     \ ]}
+" command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, g:x_fzf_opts, <bang>0)
+" command! -bang -nargs=? -complete=dir Ag call fzf#vim#ag(<q-args>, g:x_fzf_opts, <bang>0)
+" command! -bang -nargs=? -complete=dir Buffers call fzf#vim#buffers(<q-args>, g:x_fzf_opts, <bang>0)
+" command! -bang -nargs=? -complete=dir BTags call fzf#vim#buffer_tags(<q-args>, g:x_fzf_opts, <bang>0)
+" command! -bang -nargs=? -complete=dir Marks call fzf#vim#marks(<q-args>, g:x_fzf_opts, <bang>0)
+" command! -bang -nargs=? -complete=dir Snippets call fzf#vim#snippets(<q-args>, g:x_fzf_opts, <bang>0)
+" command! -bang -nargs=? -complete=dir History call fzf#vim#files(<q-args>, g:x_fzf_opts, <bang>0)
+
+" nnoremap fg :GFiles<CR>
+" nnoremap fb :call fzf#vim#buffers(fzf#vim#with_preview('right:0%'))<CR>
+" nnoremap fa :call fzf#vim#ag('', fzf#vim#with_preview('right'))<CR>
+""nnoremap <localleader>f :Files %:p:h<CR>
+"" nnoremap <M-f> :Files<CR>
+"" nnoremap <LocalLeader>f :Files<CR>
+"" nnoremap <localleader>H :Helptags<CR>
+"" nnoremap <localleader>h :History<CR>
+"" nnoremap <localleader>c :History:<CR>
+"" nnoremap <localleader>/ :History/<CR>
+"" nnoremap <localleader>p :Snippets<CR>
+"" nnoremap <localleader>C :BCommits<CR>
+"" nnoremap <localleader>b :Buffers<CR>
+"" nnoremap <localleader>t :Tags<CR>
+"" nnoremap <LocalLeader>a :Ag<CR>
+"" nnoremap <localleader>m :Marks<CR>
+""nnoremap <localleader>p/ :Files ..
+""nnoremap <localleader>color/ :Colors
+""nnoremap <localleader>k/ :Maps<CR>
+"nnoremap fd :Files<CR>
+"" nnoremap fg :GFiles<CR>
+"nnoremap fb :call fzf#vim#buffers(fzf#vim#with_preview('right:0%'))<CR>
+"nnoremap ft :Tags<CR>
+"nnoremap fc :History:<CR>
+"nnoremap fC :Commands<CR>
+"nnoremap fh :History<CR>
+"nnoremap fa :Rg<CR>
+"nnoremap fm :Marks<CR>
+"" nnoremap fa :call fzf#vim#ag('', fzf#vim#with_preview('right'))<CR>
+"nnoremap fs :Snippets<CR>
+"" nnoremap fS :History/<CR>
+"" nnoremap fm :Marks<CR>
+
+
+" [Rg] Set preview window
+" command! -bang -nargs=* Rg
+"   \ call fzf#vim#grep(
+"   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+"   \   fzf#vim#with_preview(), <bang>0)
+
+" " [Rg] disable matching file path
+" command! -bang -nargs=* Rg
+"     \ call fzf#vim#grep(
+"     \   "rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1,
+"     \   {'options': '--delimiter : --nth 4..'}, <bang>0)
+
+" [Ag] disable matching file path
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
+
+
+" MUST BE PLACED AFTER SETTINGS
+"REF: https://github.com/junegunn/fzf.vim
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all', 'commit': '3f94bcb'}
+Plug 'junegunn/fzf.vim', {'commit': 'ddc14a6'}
+" Plug 'chengzeyi/fzf-preview.vim'
+
+
+" ============= End of File ==================
+echom 'Loaded ' . expand('<sfile>:t') |redraw

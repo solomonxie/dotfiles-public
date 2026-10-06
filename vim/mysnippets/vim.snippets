@@ -1,0 +1,29 @@
+snippet ifhas
+if has('${1:anything}')
+	${2:do_something}
+endif
+endsnippet
+
+snippet ifexist
+if filereadable(expand('${1:path_of_file}'))
+	do_something $1
+endif
+endsnippet
+
+snippet ifplugin
+if &runtimepath =~ '${1:plugin_name}'
+	do_something $1
+endif
+endsnippet
+
+snippet mkdir
+if !isdirectory('${1:path_of_dir}')
+	silent! call mkdir('$1', 'p')
+endif
+endsnippet
+
+
+snippet system
+let ${2:${VISUAL:v}} = trim(system("${1:${VISUAL:which python}}"))
+endsnippet
+

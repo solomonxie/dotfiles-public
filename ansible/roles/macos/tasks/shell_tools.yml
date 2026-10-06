@@ -1,0 +1,59 @@
+---
+- name: Install Vim, Zsh, Tmux, and Pandoc packages
+  community.general.homebrew:
+    name:
+      - zsh
+      - tmux
+      - pandoc  # markdown -> HTML preview (see vimrc-functions.vim PreviewMarkdown)
+    state: present
+  # Neovim itself is installed by neovim.yml (GitHub release, not Homebrew).
+
+- name: Ensure target config and tool directories exist
+  ansible.builtin.file:
+    path: "{{ ansible_facts.env.HOME }}/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - .config
+
+- name: Link this checkout to ~/.dotfiles (stable path used by the configs)
+  ansible.builtin.file:
+    src: "{{ lookup('env', 'DOTFILES') }}"
+    dest: "{{ ansible_facts.env.HOME }}/.dotfiles"
+    state: link
+    force: yes
+  when: lookup('env', 'DOTFILES') != ansible_facts.env.HOME + '/.dotfiles'
+
+- name: Create symlinks for dotfiles
+  ansible.builtin.file:
+    src: "{{ ansible_facts.env.HOME }}/{{ item.src }}"
+    dest: "{{ ansible_facts.env.HOME }}/{{ item.dest }}"
+    state: link
+    force: yes
+  loop:
+    # - { src: '.dotfiles/vim', dest: '.config/nvim' }
+    - { src: '.dotfiles/zsh/zshrc-mac.zsh', dest: '.zshrc' }
+    - { src: '.dotfiles/tmux/tmux.conf', dest: '.tmux.conf' }
+    - { src: '.dotfiles/etc/tigrc', dest: '.tigrc' }
+    - { src: '.dotfiles/etc/fd', dest: '.config/fd' }
+
+- name: Install tmux server LaunchAgent (not loaded here, see tmux/README.md)
+  ansible.builtin.copy:
+    src: "{{ ansible_facts.env.HOME }}/.dotfiles/tmux/com.local.tmux.plist"
+    dest: "{{ ansible_facts.env.HOME }}/Library/LaunchAgents/com.local.tmux.plist"
+    remote_src: true
+    mode: '0644'
+
+
+
+
+
+- name: Touch files
+  ansible.builtin.file:
+    path: "{{ ansible_facts.env.HOME }}/{{ item }}"
+    state: touch
+    mode: '0644'
+  loop:
+    - ".vimrc-env.vim"
+    - ".vimrc-local.vim"
+    - ".global.env"

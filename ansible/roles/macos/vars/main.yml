@@ -1,0 +1,62 @@
+# Centralize package names and application lists here.
+# Get ideas from: brew list --formula
+---
+homebrew_taps:
+  - hashicorp/tap
+
+homebrew_packages:
+  - vim
+  - tmux
+  - zsh
+  - git
+  - wget
+  - ansible
+  - hashicorp/tap/terraform
+  - awscli
+  - htop
+  - lua
+  - reattach-to-user-namespace
+  - ripgrep
+  - telnet
+  - coreutils
+  - mactop
+  - ruby
+  - cmake
+  - sqlite
+  - fd
+  - duckdb
+  - tig
+  - ffmpeg
+  - tree
+  - ncdu
+  - ollama
+  - fzf
+  - gnu-sed
+  - gnu-tar
+  - virtualenv
+  - python@3.12
+  - python@3.13
+  - python@3.14
+
+# Neovim is NOT installed via Homebrew: it's downloaded from the GitHub release
+# so it matches the version zsh/zshrc-mac.zsh puts first on PATH. Bump both
+# together when upgrading.
+neovim_version: "0.11.2"
+neovim_arch: "{{ 'arm64' if ansible_facts.architecture == 'arm64' else 'x86_64' }}"
+
+# Models pulled after `ollama` (see homebrew_packages) is installed.
+ollama_models:
+  - llama3.2
+  - qwen2.5-coder
+  - nomic-embed-text
+
+hitoolbox_input_sources:
+  AppleEnabledInputSources:
+    - { InputSourceKind: "Keyboard Layout", "KeyboardLayout ID": 0, "KeyboardLayout Name": "U.S." }
+    - { "Bundle ID": "com.apple.CharacterPaletteIM", InputSourceKind: "Non Keyboard Input Method" }
+    - { "Bundle ID": "com.apple.PressAndHold", InputSourceKind: "Non Keyboard Input Method" }
+    - { "Bundle ID": "com.apple.inputmethod.SCIM", InputSourceKind: "Keyboard Input Method" }
+    - { "Bundle ID": "com.apple.inputmethod.SCIM", "Input Mode": "com.apple.inputmethod.SCIM.ITABC", InputSourceKind: "Input Mode" }
+  AppleSelectedInputSources:
+    - { InputSourceKind: "Keyboard Layout", "KeyboardLayout ID": 0, "KeyboardLayout Name": "U.S." }
+    - { "Bundle ID": "com.apple.PressAndHold", InputSourceKind: "Non Keyboard Input Method" }
