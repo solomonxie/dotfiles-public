@@ -44,11 +44,6 @@ homebrew_packages:
 neovim_version: "0.11.2"
 neovim_arch: "{{ 'arm64' if ansible_facts.architecture == 'arm64' else 'x86_64' }}"
 
-# Models pulled after `ollama` (see homebrew_packages) is installed.
-ollama_models:
-  - llama3.2
-  - qwen2.5-coder
-  - nomic-embed-text
 
 hitoolbox_input_sources:
   AppleEnabledInputSources:

@@ -18,7 +18,7 @@ make install-mac
 
 | Path | Content |
 |---|---|
-| `ansible/roles/macos` | packages, system defaults, symlinks, iTerm2 prefs (`manual/` = shell equivalent) |
+| `ansible/roles/macos` | packages, system defaults, symlinks, iTerm2 prefs |
 | `zsh/` `vim/` `tmux/` `etc/` | shell, Neovim, tmux, git/tig configs |
 
 Left out vs the private repo: terraform/AWS, cloud scripts, legacy Linux roles, the headless-server role, secrets (`.env`, SSH keys, tokens).

@@ -1,4 +1,4 @@
-.PHONY: check-env install-mac backup-mac backup-brew backup-vscode
+.PHONY: check-env install-mac
 
 export PATH := /opt/homebrew/bin:/usr/local/bin:$(PATH)
 
@@ -6,9 +6,6 @@ export PATH := /opt/homebrew/bin:/usr/local/bin:$(PATH)
 export
 
 DOTFILES := $(CURDIR)
-MACOS_MANUAL := $(DOTFILES)/ansible/roles/macos/manual
-VSCODE_USER := $(HOME)/Library/Application Support/Code/User
-VSCODE_CLI := /Applications/Visual Studio Code.app/Contents/Resources/app/bin/code
 ANSIBLE_ARGS ?=
 
 LOAD_ENV := set -a; . ./.env; set +a;
@@ -41,18 +38,3 @@ install-mac: check-env
 	if [ ! -e "$(HOME)/.dotfiles" ]; then ln -s "$(DOTFILES)" "$(HOME)/.dotfiles"; fi; \
 	echo "==> Running Ansible macOS setup..."; \
 	cd "$(DOTFILES)/ansible" && ansible-playbook -i inventory.ini site.yml $(ANSIBLE_ARGS)
-
-
-
-backup-mac: backup-brew backup-vscode
-	@echo "Done. iTerm2 prefs sync automatically on quit (ansible/roles/macos/iterm2/prefs)."
-
-backup-brew:
-	brew bundle dump --force --file="$(MACOS_MANUAL)/Brewfile"
-
-backup-vscode:
-	mkdir -p "$(MACOS_MANUAL)/vscode"
-	cp "$(VSCODE_USER)/settings.json" "$(MACOS_MANUAL)/vscode/settings.json"
-	[ -f "$(VSCODE_USER)/keybindings.json" ] && \
-		cp "$(VSCODE_USER)/keybindings.json" "$(MACOS_MANUAL)/vscode/keybindings.json" || true
-	"$(VSCODE_CLI)" --list-extensions > "$(MACOS_MANUAL)/vscode/extensions.txt"
