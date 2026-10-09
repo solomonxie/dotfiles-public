@@ -37,6 +37,13 @@
     - { src: '.dotfiles/etc/tigrc', dest: '.tigrc' }
     - { src: '.dotfiles/etc/fd', dest: '.config/fd' }
 
+- name: Seed ~/.gitconfig with placeholder identity (keeps an existing one)
+  ansible.builtin.copy:
+    src: "{{ ansible_facts.env.HOME }}/.dotfiles/etc/git/gitconfig-main.ini"
+    dest: "{{ ansible_facts.env.HOME }}/.gitconfig"
+    mode: '0644'
+    force: no
+
 
 
 
