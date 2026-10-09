@@ -139,7 +139,6 @@ export PATH="$HOME/virtualenv/venv/bin:$PATH"
 # export PATH="$HOME/virtualenv/venv3_12/bin:$PATH"
 # =====NODE.JS=====
 export PATH="/usr/local/opt/node@10/bin:$PATH"
-export PATH="$HOME/.nvm/versions/node/v10.17.0/bin:$PATH"
 export PATH="$HOME/virtualnode/venv10/bin:$PATH"
 export PATH="$HOME/virtualnode/venv16/bin:$PATH"
 export PATH="$HOME/virtualnode/venv20/bin:$PATH"
